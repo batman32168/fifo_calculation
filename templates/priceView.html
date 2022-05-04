@@ -1,0 +1,53 @@
+{% extends 'base_table.html' %}
+{% block title %}
+Price Overview
+{% endblock %}
+{% block create %}
+<div class="col-md-6 offset-md-3">
+    <h2>Create new price</h2>
+    <form name="newPrice" id="newPrice" class="needs-validation" novalidate>
+
+        <div class="form-group row">
+            <label for="price" class="col-sm-4 col-form-label">Price</label>
+            <div class="col-sm-8">
+                <input type="number" class="form-control" id="price" name="price" placeholder="0.001"
+                       step="0.0001" aria-label="Username" aria-describedby="basic-addon1" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="date" class="col-sm-4 col-form-label">Date & Time</label>
+            <div class="col-sm-8">
+                <input type="datetime-local" name="date" id="date" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="currency_id" class="col-sm-4 col-form-label">Price</label>
+            <div class="col-sm-8">
+                <select id="currency_id" name="currency_id" class="custom-select"
+                        aria-label=".form-select example" required>
+                    <option selected disabled value>select one</option>
+                    {% if currencies != null %}
+                    {%- for cur in currencies %}
+                    <option value="{{ cur.id }}">{{cur.name}}</option>
+                    {%- endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        <div class="offset-md-9 input-group ">
+            <button class="btn btn-primary" type="submit" id="btn_createNewPrice" name="btn_createNewPrice">Create price
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
+
+{% block table_header %}Price List{% endblock %}
+{% block url %}price{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='priceTable.js')}}"/>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="row clearfix">
+        <div class="col-md-4 column">
+            <h1>Price View</h1>
+              <div class="pull-right">
+                   <form name="newPrice" id="newPrice" method="POST" action="../api/v0/price">
+
+                 <label for="data.price">price</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="data.price" name="data.price">Price</span>
+                </div>
+                <input type="number" class="form-control" id="price" name="price" placeholder="0.001" step="0.0001" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <label for="data.date">Date & Time</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="data.date">Time</span>
+                </div>
+                <input type="datetime-local" name="date" id="date" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+
+            <label for="data.curency_id">Currency</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="data.curency_id">URL</span>
+                </div>
+
+               <select id="currency_id" name="currency_id" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                             <option  selected>select one</option>
+                            {% if currencies != null %}
+                                {%- for cur in currencies %}
+                                    <option value="{{ cur.id }}">{{cur.name}}</option>
+                                {%- endfor %}
+                            {% endif %}
+                     </select>
+            </div>
+                                   <div class="input-group mb-3" hidden="true">
+                <div class="input-group-prepend" hidden="true">
+                    <span class="input-group-text" id="data.source">Source</span>
+                </div>
+                <input type="text"  name="source" id="source" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <button class="btn btn-primary" >Submit</button>
+                        <button class="btn btn-primary" type="submit" id="createNewPrice" name="createNewPrice" >Submit changes</button>
+        </form>
+                  </div>
+        </div>
+             <div class="col-1">
+
+  </div>
+            <table class="table table-bordered table-hover" id="tab_logic" name="tab_logic">
+                <thead>
+                <tr>
+                    <th class="text-center" hidden="true">
+                        id
+                    </th>
+                    <th class="text-center">
+                        Date Time
+                    </th>
+                    <th class="text-center">
+                        Price
+                    </th>
+                    <th class="text-center">
+                        Currency
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {%- for row in items %}
+                <tr>
+                    {%- for column in columns %}
+                    {% if column =='price' %}
+                    <td class="text-right">
+                        <input type="number" name="price" step="0.1" class="form-control"
+                               required="true" value="{{ row[column]}}"></td>
+                    {% elif column =='date' %}
+                    <td><input type="datetime-local" name='date' class="form-control"
+                               required="true" value="{{ row[column]}}"/></td>
+                    {% elif column =='currency' %}
+                    <td class="text-center">
+                        <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                             <option value="{{ row[column].currency_id }}">{{ row[column].name }}</option>
+                            {% if currencies != null %}
+                                {%- for cur in currencies %}
+                                    <option value="{{ cur.currency_id }}">{{cur.name}}</option>
+                                {%- endfor %}
+                            {% endif %}
+                        </select>
+                    </td>
+                    {% endif %}
+                    {%- endfor %}
+
+                </tr>
+                {%- endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{%block scripts%}
+
+{%endblock%}

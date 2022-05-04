@@ -1,0 +1,48 @@
+{% extends 'base_table.html' %}
+{% block title %}
+Wallet / Exchanges
+{% endblock %}
+{% block create %}
+<div class="col-md-6 offset-md-3">
+    <h2>Create new wallet / exchange</h2>
+    <form name="newWallet" id="newWallet" class="needs-validation" novalidate>
+        <div class="form-group row">
+            <label for="name" class="col-sm-4 col-form-label">Wallet / Exchange</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="name" name="name" placeholder="nexo.io"
+                       aria-label="Username" aria-describedby="basic-addon1" required>
+            </div>
+            <div class="invalid-feedback">
+                Wallet / Exchange is required
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="description" class="col-sm-4 col-form-label">Description</label>
+            <div class="col-sm-8">
+                <input type="text" name="description" id="description" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1" placeholder="exchange and wallet">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="url" class="col-sm-4 col-form-label">Address / URL</label>
+            <div class="col-sm-8">
+                <input type="text" name="url" id="url" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1" placeholder="https://nexo.io">
+            </div>
+        </div>
+        <div class="offset-md-9 input-group ">
+            <button class="btn btn-primary" type="submit" id="btn_createNewWallet" name="btn_createNewWallet">Register
+                wallet
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block table_header %}Wallet / Exchange List{% endblock %}
+{% block url %}wallet{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='walletTable.js')}}"/>
+{% endblock %}

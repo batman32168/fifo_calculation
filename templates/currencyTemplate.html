@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-6 mx-auto mt-5">
+        <h1 class="mb-5">Currency</h1>
+        <form action="/api/v0/currency" method="POST">
+            <label for="name">Name (short)</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="name">Name</span>
+                </div>
+                <input type="text" class="form-control" placeholder="BTC or €" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <label for="long_name">Long name</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="long_name">Name</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Bitcoin Euro" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <label for="price_url">Price URL</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="price_url">URL</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Price url" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <label for="api_key">API-Key</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="api_key">Key</span>
+                </div>
+                <input type="text" class="form-control" placeholder="API key" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <button class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
