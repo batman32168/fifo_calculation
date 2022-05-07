@@ -1,15 +1,15 @@
 from apiflask import APIBlueprint
-from apiflask import APIFlask, doc
+from apiflask import APIFlask
 from models.currencyModel import Currency
 from extenstions import db
 from schemas.currencySchema import *
 from sqlalchemy import select
 from flask import jsonify, request
 
-currency_blueprint = APIBlueprint( 'currency',__name__,enable_openapi=True)
+currency_blueprint = APIBlueprint('currency', __name__, enable_openapi=True)
+
 
 @currency_blueprint.get('/currency')
-@currency_blueprint.doc(summary='Get all currencies', description='Get all currencies include all fields')
 def get_all_currencies():
     page = request.args.get('page', 1, type=int)
     complete = db.session.query(Currency).count()
@@ -24,7 +24,7 @@ def get_all_currencies():
     } for cur in paginated_items]
     return jsonify({
         'success': True,
-        'items': len(paginated_items),
+        'page_count': len(paginated_items),
         'page': page,
         'results': results,
         'total_count': complete
@@ -32,11 +32,11 @@ def get_all_currencies():
 
 
 @currency_blueprint.get('/currency/<currency_id>')
-@currency_blueprint.doc(summary='Get a single currency', description='Get the data from the given currency id')
 @currency_blueprint.output(CurrencyOutSchema)
 def get_currency(currency_id):
     raw_result = db.session.query(Currency).get(currency_id)
     return raw_result
+
 
 @currency_blueprint.post('/currency')
 @currency_blueprint.input(CurrencyCreateSchema)
@@ -57,7 +57,7 @@ def create_new_currency(data):
 @currency_blueprint.post('/currency/<currency_id>')
 @currency_blueprint.input(CurrencyCreateSchema)
 @currency_blueprint.output(CurrencyOutSchema)
-def update_currency(currency_id,data):
+def update_currency(currency_id, data):
     currency_object = db.session.query(Currency).get(currency_id)
     try:
         temp_cur = Currency(data)
@@ -81,7 +81,8 @@ def id_currency(currency_id):
     except Exception as e:
         db.session.rollback()
         return e
-    return {'Messages':'currency with id {} delete successfully'.format(currency_id)}
+    return {'Messages': 'currency with id {} delete successfully'.format(currency_id)}
+
 
 def get_filter(args):
     builder = Currency.query
@@ -89,12 +90,18 @@ def get_filter(args):
         if hasattr(Currency, key):
             vals = args.getlist(key)  # one or many
             builder = builder.filter(getattr(Currency, key).in_(vals))
-    if 'page' not in args:
+    if 'offset' not in args:
+        offset = 0
         items = builder.all()
     else:
-        if 'items' not in args:
-            items = builder.paginate(int(request.args['page'])).items
-        else:
-            items = builder.paginate(page=int(request.args['page']),
-                                     per_page=int(request.args['items'])).items
+        offset = int(request.args['offset'])
+    if 'limit' not in args:
+        limit = 25
+    else:
+        limit = int(request.args['limit'])
+    try:
+        page = int(offset / limit) + 1
+    except:
+        page = 1
+    items = builder.paginate(page=page, per_page=limit).items
     return items

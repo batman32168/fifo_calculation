@@ -14,11 +14,7 @@ class Wallet(db.Model):
 
     def __init__(self, data):
         self.name = data['name']
-        try:
+        if 'description' in data:
             self.description = data['description']
-        except:
-            self.description = ""
-        try:
+        if 'url' in data:
             self.url = data['url']
-        except:
-            self.url =""

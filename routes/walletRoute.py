@@ -1,5 +1,5 @@
 from apiflask import APIBlueprint
-from apiflask import APIFlask, doc
+from apiflask import APIFlask
 from models.walletModel import Wallet
 from extenstions import db
 from schemas.walletSchema import *
@@ -12,6 +12,7 @@ wallet_blueprint = APIBlueprint('wallet', __name__, enable_openapi=True)
 @wallet_blueprint.get('/wallet')
 def get_all_wallets():
     page = request.args.get('page', 1, type=int)
+    complete = db.session.query(Wallet).count()
     raw_result = get_filter(request.args)
     paginated_items = (raw_result)
     results = [{
@@ -22,18 +23,19 @@ def get_all_wallets():
     } for wal in paginated_items]
     return jsonify({
         'success': True,
-        'page_size': len(paginated_items),
+        'page_count': len(paginated_items),
         'page': page,
         'results': results,
+        'total_count': complete
     })
 
 
 @wallet_blueprint.get('/wallet/<wallet_id>')
-@wallet_blueprint.doc(summary='Get a single currency', description='Get the data from the given currency id')
 @wallet_blueprint.output(WalletOutSchema)
 def get_wallet(wallet_id):
     raw_result = db.session.query(Wallet).get_or_404(wallet_id)
     return raw_result
+
 
 @wallet_blueprint.post('/wallet')
 @wallet_blueprint.input(WalletInSchema)
@@ -77,7 +79,7 @@ def delete_wallet(wallet_id):
     except Exception as e:
         db.session.rollback()
         return e
-    return {'Messages':'wallet with id {} delete successfully'.format(wallet_id)}
+    return {'Messages': 'wallet with id {} delete successfully'.format(wallet_id)}
 
 
 def get_filter(args):
@@ -86,12 +88,18 @@ def get_filter(args):
         if hasattr(Wallet, key):
             vals = args.getlist(key)  # one or many
             builder = builder.filter(getattr(Wallet, key).in_(vals))
-    if 'page' not in args:
+    if 'offset' not in args:
+        offset = 0
         items = builder.all()
     else:
-        if 'items' not in args:
-            items = builder.paginate(int(request.args['page'])).items
-        else:
-            items = builder.paginate(page=int(request.args['page']),
-                                     per_page=int(request.args['items'])).items
+        offset = int(request.args['offset'])
+    if 'limit' not in args:
+        limit = 25
+    else:
+        limit = int(request.args['limit'])
+    try:
+        page = int(offset / limit) + 1
+    except:
+        page = 1
+    items = builder.paginate(page=page, per_page=limit).items
     return items

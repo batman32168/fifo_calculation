@@ -19,17 +19,10 @@ class Currency(db.Model):
                     self.price_url)
 
     def __init__(self, data):
-
         self.name = data['name']
-        try:
+        if 'long_name' in data:
             self.long_name = data['long_name']
-        except:
-            self.long_name=""
-        try:
+        if 'api_key' in data:
             self.api_key = data['api_key']
-        except:
-            self.api_key=""
-        try:
+        if 'price_url' in data:
             self.price_url = data['price_url']
-        except:
-            self.price_url=""

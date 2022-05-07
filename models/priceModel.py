@@ -30,17 +30,3 @@ class Price(db.Model):
         except:
             self.source=""
 
-    def get_price(self):
-        return self.price
-
-    def get_date(self):
-        return self.date
-
-    def get_source(self):
-        return self.source
-
-    def get_id(self):
-        return self.id
-
-    def get_currency_id(self):
-        return self.currency_id

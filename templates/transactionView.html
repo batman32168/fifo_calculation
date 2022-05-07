@@ -1,0 +1,163 @@
+{% extends 'base_table.html' %}
+{% block title %}
+Transactions
+{% endblock %}
+{% block create %}
+<div class="col-md-8 offset-md-2">
+    <h2>Create new transaction</h2>
+
+    <form name="newTransaction" id="newTransaction" class="needs-validation" novalidate>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon">Date & Time</span>
+                </div>
+                <input type="datetime-local" name="date" id="date" class="form-control" aria-label="Username"
+                       aria-describedby="basic-addon1" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Input Amount</span>
+                </div>
+                <input type="number" class="form-control text-right" id="input_amount" name="input_amount"
+                       placeholder="0.001"
+                       step="0.0001" aria-label="Username" aria-describedby="basic-addon1" required>
+                <div class="input-group-append">
+                    <select id="input_id" name="input_id" class="custom-select" aria-label=".form-select example"
+                            required>
+                        <option selected disabled value>currency</option>
+                        {% if currencies != null %}
+                        {%- for cur in currencies %}
+                        <option value="{{ cur.id }}">{{cur.name}}</option>
+                        {%- endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon2">Output Amount</span>
+                </div>
+                <input type="number" class="form-control text-right" id="output_amount" name="output_amount"
+                       placeholder="0.01"
+                       step="0.01" aria-label="Username" aria-describedby="basic-addon1" required>
+                <div class="input-group-append">
+                    <select id="output_id" name="output_id" class="custom-select" aria-label=".form-select example"
+                            required>
+                        <option selected disabled value>currency</option>
+                        {% if currencies != null %}
+                        {%- for cur in currencies %}
+                        <option value="{{ cur.id }}">{{cur.name}}</option>
+                        {%- endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Fee</span>
+                </div>
+                <input type="number" class="form-control text-right" id="fee_amount" name="fee_amount"
+                       placeholder="0.01"
+                       step="0.01" aria-label="Username" aria-describedby="basic-addon1" required>
+                <div class="input-group-append">
+                    <select id="fee_id" name="fee_id" class="custom-select" aria-label=".form-select example"
+                            required>
+                        <option selected disabled value>currency</option>
+                        {% if currencies != null %}
+                        {%- for cur in currencies %}
+                        <option value="{{ cur.id }}">{{cur.name}}</option>
+                        {%- endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+        </div>
+         <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon8">Type</span>
+                </div>
+                 <select id="type_id" name="type_id" class="custom-select"
+                            aria-label=".form-select example" required>
+                        <option selected disabled value>Transaction Type</option>
+                        {% if transaction_types != null %}
+                        {%- for tt in transaction_types %}
+                        <option value="{{ tt.id }}">{{tt.name}}</option>
+                        {%- endfor %}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon4">Wallet</span>
+                </div>
+                <select id="wallet_id" name="wallet_id" class="custom-select"
+                        aria-label=".form-select example" required>
+                    <option selected disabled value>select one</option>
+                    {% if wallets != null %}
+                    {%- for wallet in wallets %}
+                    <option value="{{ wallet.id }}">{{wallet.name}}</option>
+                    {%- endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon5">Description</span>
+                </div>
+                <input type="text" class="form-control" id="description" name="description" placeholder="Buy something"
+                       aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon6">receive from</span>
+                </div>
+                <input type="text" class="form-control" id="receive_from" name="receive_from"
+                       placeholder="Sender address" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon7">Send to</span>
+                </div>
+                <input type="text" class="form-control" id="send_to" name="send_to" placeholder="recipient address"
+                       aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Small file input example</label>
+            <input class="form-control form-control-sm" id="formFileSm" type="file">
+        </div>
+        <div class="offset-md-9 input-group ">
+            <button class="btn btn-primary" type="submit" id="btn_createNewTransactionType"
+                    name="btn_createNewTransactionType">Create Transaction Type
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
+{% block table_header %}Transaction{% endblock %}
+{% block url %}transaction{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='transactionTable.js')}}"/>
+{% endblock %}

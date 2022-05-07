@@ -1,5 +1,5 @@
 from apiflask import APIBlueprint
-from apiflask import APIFlask, doc
+from apiflask import APIFlask
 from models.transactionTypeModel import TransactionType
 from extenstions import db
 from schemas.transactionTypeSchema import *
@@ -12,24 +12,26 @@ transactionType_blueprint = APIBlueprint('transactionType', __name__, enable_ope
 @transactionType_blueprint.get('/transactiontype')
 def get_all_tt():
     page = request.args.get('page', 1, type=int)
+    complete = db.session.query(TransactionType).count()
     raw_result = get_filter(request.args)
     paginated_items = (raw_result)
     results = [{
         'id': tt.id,
-        'type': tt.type,
+        'name': tt.name,
         'deposit': tt.deposit,
+        'interest': tt.interest,
         'description': tt.description
     } for tt in paginated_items]
     return jsonify({
         'success': True,
-        'page_size': len(paginated_items),
+        'page_count': len(paginated_items),
         'page': page,
         'results': results,
+        'total_count': complete
     })
 
 
 @transactionType_blueprint.get('/transactiontype/<transactiontype_id>')
-@transactionType_blueprint.doc(summary='Get a single currency', description='Get the data from the given currency id')
 @transactionType_blueprint.output(TransactionTypeOutSchema)
 def get_tt(transactiontype_id):
     raw_result = db.session.query(TransactionType).get_or_404(transactiontype_id)
@@ -58,7 +60,7 @@ def update_tt(transactiontype_id, data):
     tt_object = db.session.query(TransactionType).get_or_404(transactiontype_id)
     try:
         temp_tt = TransactionType(data)
-        tt_object.type = temp_tt.type
+        tt_object.name = temp_tt.name
         tt_object.deposit = temp_tt.deposit
         tt_object.description = temp_tt.description
         db.session.commit()
@@ -86,12 +88,18 @@ def get_filter(args):
         if hasattr(TransactionType, key):
             vals = args.getlist(key)  # one or many
             builder = builder.filter(getattr(TransactionType, key).in_(vals))
-    if 'page' not in args:
+    if 'offset' not in args:
+        offset = 0
         items = builder.all()
     else:
-        if 'items' not in args:
-            items = builder.paginate(int(request.args['page'])).items
-        else:
-            items = builder.paginate(page=int(request.args['page']),
-                                     per_page=int(request.args['items'])).items
+        offset = int(request.args['offset'])
+    if 'limit' not in args:
+        limit = 25
+    else:
+        limit = int(request.args['limit'])
+    try:
+        page = int(offset / limit) + 1
+    except:
+        page = 1
+    items = builder.paginate(page=page, per_page=limit).items
     return items

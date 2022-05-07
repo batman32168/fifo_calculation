@@ -1,5 +1,5 @@
 from apiflask import APIBlueprint
-from apiflask import APIFlask, doc
+from apiflask import APIFlask
 from models.priceModel import Price
 from models.currencyModel import Currency
 from extenstions import db
@@ -11,7 +11,6 @@ price_blueprint = APIBlueprint('price', __name__, enable_openapi=True)
 
 
 @price_blueprint.get('/price')
-@price_blueprint.doc(summary='Get all currencies', description='Get all currencies include all fields')
 def get_all_prices():
     page = request.args.get('page', 1, type=int)
     complete = db.session.query(Price).count()
@@ -31,15 +30,13 @@ def get_all_prices():
     } for pri in paginated_items]
     return jsonify({
         'success': True,
-        'page_size': len(paginated_items),
+        'page_count': len(paginated_items),
         'page': page,
         'results': results,
         'total_count': complete
     })
 
-
 @price_blueprint.get('/price/<price_id>')
-@price_blueprint.doc(summary='Get a single currency', description='Get the data from the given currency id')
 @price_blueprint.output(PriceOutSchema, links={'currency_id': {'$ref': '#/currency/<int:currency_id>'}})
 def get_price(price_id):
     raw_result = db.session.query(Price).get_or_404(price_id)
@@ -66,7 +63,6 @@ def create_new_price():
 
 
 @price_blueprint.post('/price/<price_id>')
-@price_blueprint.doc(summary="juhu", description ="tool")
 @price_blueprint.input(PriceCreateSchema)
 @price_blueprint.output(PriceOutSchema)
 def update_price(price_id,data):
