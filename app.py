@@ -1,5 +1,5 @@
 from apiflask import APIFlask
-from routes import currencyRoute, priceRoute, walletRoute, transactionTypeRoute, transactionRoute, viewRoute
+from routes import currencyRoute, priceRoute, walletRoute, transactionTypeRoute, transactionRoute, viewRoute, statisticRoute
 from extenstions import db
 from flask_bootstrap import Bootstrap4
 from flask import render_template, request
@@ -28,7 +28,7 @@ api_app.register_blueprint(priceRoute.price_blueprint, url_prefix='/api/v0')
 api_app.register_blueprint(walletRoute.wallet_blueprint, url_prefix='/api/v0')
 api_app.register_blueprint(transactionTypeRoute.transactionType_blueprint, url_prefix='/api/v0')
 api_app.register_blueprint(transactionRoute.transaction_blueprint, url_prefix='/api/v0')
-
+api_app.register_blueprint(statisticRoute.statistic_blueprint, url_prefix='/api/v0')
 api_app.register_blueprint(viewRoute.view_blueprint, url_prefix='/view')
 
 with api_app.app_context():

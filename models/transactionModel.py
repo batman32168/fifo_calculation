@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 from extenstions import db
 
 
@@ -17,6 +18,9 @@ class Transaction(db.Model):
     description = db.Column(db.String)
     receive_from = db.Column(db.String)
     send_to = db.Column(db.String)
+    output_currency = relationship("Currency", foreign_keys=[output_id])
+    input_currency = relationship("Currency", foreign_keys=[input_id])
+    fee_currency = relationship("Currency", foreign_keys=[fee_id])
 
     def __repr__(self):
         return "<Transaction(id='{}', date='{}', input_amount='{}', input_id:'{}', " \
