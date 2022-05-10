@@ -44,7 +44,8 @@ function detailFormatter(index, row) {
 
   function priceFormatter(data){
   var number = 0.0
-  number = data
+  if (data!=undefined && data != null){
+  number = data}
     return number.toFixed(8)
   }
 

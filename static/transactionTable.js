@@ -44,7 +44,8 @@ function detailFormatter(index, row) {
 
   function priceFormatter(data){
   var number = 0.0
-  number = data
+  if (data!=undefined && data != null){
+  number = data}
     return number.toFixed(8)
   }
 
@@ -76,14 +77,14 @@ function detailFormatter(index, row) {
           formatter: dateFormatter
         },
         {
-          field: 'token_amount',
+          field: 'input_amount',
           title: 'Token amount',
           sortable: true,
           align: 'center',
           formatter: priceFormatter
         },
            {
-          field: 'fiat_amount',
+          field: 'output_amount',
           title: 'FIAT amount',
           sortable: true,
           align: 'center',
@@ -114,7 +115,7 @@ function detailFormatter(index, row) {
           field: 'type_id',
           title: 'Token',
           sortable: true,
-          align: 'center'
+          align: 'center',
           formatter: currencyFormatter
         }]
     })
@@ -145,7 +146,7 @@ function detailFormatter(index, row) {
 
 function deleteRow(id){
     var method = 'DELETE';
-    var url = '/api/v0/Transaction/'+id;
+    var url = '/api/v0/transaction/'+id;
     ajaxCallRequest(method, url);
     }
 
